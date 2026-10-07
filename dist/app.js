@@ -11,6 +11,28 @@ document.querySelectorAll('[data-image]').forEach(b=>b.addEventListener('click',
 document.querySelector('.close-photo')?.addEventListener('click',()=>lightbox.close());
 lightbox?.addEventListener('click',e=>{if(e.target===lightbox){const r=lightbox.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)lightbox.close()}});
 const form=document.querySelector('#contact-form');
-if(form){const requested=new URLSearchParams(location.search).get('leistung');if(requested)form.elements.nachricht.value='Ich interessiere mich für '+requested+'.\n';form.addEventListener('submit',e=>{e.preventDefault();const data=new FormData(form);const body='Name: '+data.get('vorname')+' '+data.get('nachname')+'\nE-Mail: '+data.get('email')+'\nTelefon: '+data.get('telefon')+'\n\n'+data.get('nachricht');const url='mailto:info@s-m-technik.de?subject='+encodeURIComponent('Projektanfrage an SMTechnik')+'&body='+encodeURIComponent(body);location.href=url;document.querySelector('#form-status').textContent='Der E-Mail-Entwurf wurde angefordert. Falls sich kein E-Mail-Programm öffnet, schreiben Sie bitte direkt an info@s-m-technik.de.'})}
+if(form){
+  const params=new URLSearchParams(location.search),topic=form.elements.thema,message=form.elements.nachricht;
+  const options=Array.from(topic.options).map(option=>option.value);
+  const requested=params.get('leistung')||params.get('maschine')||params.get('thema');
+  const privateTopics=["Zäune & Tore","Geländer & Handläufe","Kamine aus Metall","Metallelemente für Haus & Garten","Sonderanfertigung nach Skizze"];
+  let generated='';
+  const updateDraft=()=>{
+    const next=topic.value==='Allgemeine Anfrage'?'':(params.get('maschine')===topic.value?'Ich interessiere mich für die Fertigung mit '+topic.value+'.':'Ich interessiere mich für '+topic.value+'.')+'\n\n';
+    if(!message.value||message.value===generated)message.value=next;
+    generated=next;
+    if(privateTopics.includes(topic.value)&&!form.elements.kundentyp.value)form.elements.kundentyp.value='Privatkunde';
+  };
+  if(requested&&options.includes(requested))topic.value=requested;
+  updateDraft();
+  topic.addEventListener('change',updateDraft);
+  form.addEventListener('reset',()=>setTimeout(()=>{generated='';updateDraft()},0));
+  form.addEventListener('submit',e=>{
+    e.preventDefault();const data=new FormData(form);
+    const body='Thema: '+data.get('thema')+'\nAnfrage als: '+(data.get('kundentyp')||'Nicht angegeben')+'\nName: '+data.get('vorname')+' '+data.get('nachname')+'\nE-Mail: '+data.get('email')+'\nTelefon: '+data.get('telefon')+'\n\n'+data.get('nachricht');
+    location.href='mailto:info@s-m-technik.de?subject='+encodeURIComponent('Anfrage: '+data.get('thema')+' | SMTechnik')+'&body='+encodeURIComponent(body);
+    document.querySelector('#form-status').textContent='Der E-Mail-Entwurf wurde angefordert. Falls sich kein E-Mail-Programm öffnet, schreiben Sie bitte direkt an info@s-m-technik.de.';
+  });
+}
 
 document.querySelectorAll('.service-accordion').forEach(detail=>detail.addEventListener('toggle',()=>{if(detail.open)document.querySelectorAll('.service-accordion').forEach(other=>{if(other!==detail)other.open=false})}));
