@@ -1,37 +1,35 @@
-# SMTechnik — website prototype
+# SMTechnik — Unternehmenswebsite
 
-Modern German-language company website for SMTechnik GmbH & Co. KG, based on the information and media from https://www.s-m-technik.de/.
+Website für SMTechnik GmbH & Co. KG in Schwäbisch Hall.
 
-## Preview
+## Online ansehen
 
-https://smtechnik-neu.badfix.chatgpt.site/ — access is managed in Sites.
+https://badfix.github.io/smtechnik/
 
-## Run locally
+## Inhalte
 
-Requires Node.js 18 or later. No package installation is required.
+Leistungen, Maschinenpark, Unternehmensinformationen, Fotogalerie, Karriere, Ausbildung und Kontakt. Auf der Startseite lassen sich Leistungen direkt aufklappen. Der Bereich für Privatkunden zeigt individuelle Metallarbeiten für Haus und Garten.
+
+Die Anfrage übernimmt die gewählte Leistung oder Fertigungstechnik. Material, Stückzahl und Maße sind optional. Anfragen können als E-Mail-Entwurf geöffnet oder kopiert werden.
+
+## Lokal starten
+
+Node.js ab Version 18; keine zusätzlichen Pakete erforderlich.
 
 ```sh
 npm start
 ```
 
-Open http://127.0.0.1:4173/.
+Anschließend http://127.0.0.1:4173/ öffnen. Die vollständige statische Website liegt in `dist/`.
 
-## Project structure
+## Veröffentlichung
 
-- `dist/`: the complete static website, styles, JavaScript and local image assets.
-- `server.mjs`: local preview server.
-- `.openai/hosting.json`: the existing Sites project identity and static deployment configuration; contains no secrets.
+GitHub Pages veröffentlicht die Inhalte von `dist/` über den Workflow in `.github/workflows/pages.yml`. Änderungen auf `main` aktualisieren die Website automatisch.
 
-The main page includes accessible expandable service descriptions. Other pages cover services, machinery and technical data, company information, gallery, careers, training, contact and company details.
+## Hinweise zum Projekt
 
-## Prototype limitations
+- Das Kontaktformular bereitet eine E-Mail vor. Der Besucher versendet sie selbst in seiner Mail-Anwendung.
+- Datenschutz- und Cookieinformationen verweisen auf die bestehende Unternehmenswebsite und sind vor einem endgültigen Firmenauftritt auf den gewählten Betrieb abzustimmen.
+- Unternehmensdaten, technische Angaben und Zertifizierungshinweise stammen von der bestehenden Website. Neue Privatkundenleistungen wurden für diesen Entwurf ergänzt.
+- Fotos und Firmenlogo bleiben Eigentum der jeweiligen Rechteinhaber. Dieses Repository erteilt keine Lizenz zur Weiterverwendung.
 
-- The contact form opens an email draft; it does not send messages through a server.
-- Applications use email links.
-- Privacy and cookie policy links refer to the existing company website. They must be checked against the final hosting and services before launch.
-- Certification statements come from the existing website. Current certificates and the certification body's rules must be verified before using certification marks. The ISO corporate logo is not used.
-- Existing photographs, pictograms, logo and company information are used for this redesign. Publication in this repository does not grant a license to reuse the company's media.
-
-## Deployment
-
-Serve the contents of `dist/` with any static hosting provider. The website has no framework dependency or build step. Domain and email migration are separate from this prototype.
