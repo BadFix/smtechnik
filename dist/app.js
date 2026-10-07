@@ -27,11 +27,19 @@ if(form){
   updateDraft();
   topic.addEventListener('change',updateDraft);
   form.addEventListener('reset',()=>setTimeout(()=>{generated='';updateDraft()},0));
+  const inquiryBody=()=>{
+    const data=new FormData(form);
+    return 'Thema: '+data.get('thema')+'\nAnfrage als: '+(data.get('kundentyp')||'Nicht angegeben')+'\nName: '+data.get('vorname')+' '+data.get('nachname')+'\nE-Mail: '+data.get('email')+'\nTelefon: '+data.get('telefon')+'\nMaterial: '+(data.get('material')||'Noch offen')+'\nStückzahl: '+(data.get('anzahl')||'Noch offen')+'\nMaße: '+(data.get('masse')||'Noch offen')+'\n\n'+data.get('nachricht');
+  };
+  document.querySelector('.copy-inquiry')?.addEventListener('click',async()=>{
+    const body=inquiryBody(),status=document.querySelector('#form-status');
+    try{await navigator.clipboard.writeText(body);status.textContent='Ihre Anfrage wurde kopiert. Fügen Sie sie in eine E-Mail an info@s-m-technik.de ein.'}
+    catch{const fallback=document.querySelector('.copy-fallback');fallback.hidden=false;const text=document.querySelector('#inquiry-copy');text.value=body;text.focus();text.select();status.textContent='Bitte kopieren Sie den markierten Text und senden Sie ihn an info@s-m-technik.de.'}
+  });
   form.addEventListener('submit',e=>{
-    e.preventDefault();const data=new FormData(form);
-    const body='Thema: '+data.get('thema')+'\nAnfrage als: '+(data.get('kundentyp')||'Nicht angegeben')+'\nName: '+data.get('vorname')+' '+data.get('nachname')+'\nE-Mail: '+data.get('email')+'\nTelefon: '+data.get('telefon')+'\n\n'+data.get('nachricht');
-    location.href='mailto:info@s-m-technik.de?subject='+encodeURIComponent('Anfrage: '+data.get('thema')+' | SMTechnik')+'&body='+encodeURIComponent(body);
-    document.querySelector('#form-status').textContent='Der E-Mail-Entwurf wurde angefordert. Falls sich kein E-Mail-Programm öffnet, schreiben Sie bitte direkt an info@s-m-technik.de.';
+    e.preventDefault();
+    location.href='mailto:info@s-m-technik.de?subject='+encodeURIComponent('Anfrage: '+topic.value+' | SMTechnik')+'&body='+encodeURIComponent(inquiryBody());
+    document.querySelector('#form-status').textContent='Der E-Mail-Entwurf wurde angefordert. Falls sich kein E-Mail-Programm öffnet, können Sie Ihre Anfrage kopieren und direkt an info@s-m-technik.de senden.';
   });
 }
 
